@@ -105,7 +105,7 @@ public class BeaconService extends Service implements SensorEventListener{
 			}
 		});
 		showNotification("hi");
-		startScanning();
+		//stopScanning();
 	}
 
 	private void startScanning(){
@@ -135,11 +135,14 @@ public class BeaconService extends Service implements SensorEventListener{
 		Log.d(TAG, msg);
 		RemoteViews views = new RemoteViews(getPackageName(), R.layout.livecard_beacon);
 		views.setTextViewText(R.id.livecard_content,msg);
+		if(liveCard != null){
+			liveCard.unpublish();
+		}
 		liveCard = new LiveCard(getApplication(),"beacon");
 		liveCard.setViews(views);
-		Intent intent2 = new Intent(this, MenuActivity.class);
+		Intent intent2  = MenuActivity.SetUpMenu(this);
 		intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-		liveCard.setAction(PendingIntent.getActivity(getApplication(), 0, intent2, 0));
+		liveCard.setAction(PendingIntent.getActivity(getApplicationContext(), 0, intent2, 0));
 		liveCard.publish(LiveCard.PublishMode.REVEAL);
 	}
 
