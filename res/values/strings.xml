@@ -4,6 +4,5 @@
     <string name="glass_voice_trigger">beacon service</string>
     <string name="glass_voice_prompt">start or stop?</string>    
     <string name="action_settings">Settings</string>
-    <string name="dismiss">Dismiss</string>
     <string name="stop">Stop</string>
 </resources>

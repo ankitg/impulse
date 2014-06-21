@@ -1,13 +1,11 @@
 package com.ankitguglani.impulse;
 
-import java.util.ArrayList;
 import java.util.List;
 import com.estimote.sdk.Beacon;
 import com.estimote.sdk.BeaconManager;
 import com.estimote.sdk.Region;
 import com.estimote.sdk.Utils;
 import com.google.android.glass.timeline.LiveCard;
-import com.noelportugal.glassbeacon.R;
 
 import android.app.PendingIntent;
 import android.app.Service;
@@ -20,7 +18,6 @@ import android.hardware.SensorManager;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -140,8 +137,9 @@ public class BeaconService extends Service implements SensorEventListener{
 		views.setTextViewText(R.id.livecard_content,msg);
 		liveCard = new LiveCard(getApplication(),"beacon");
 		liveCard.setViews(views);
-		Intent intent = new Intent(getApplication(), BeaconService.class);
-		liveCard.setAction(PendingIntent.getActivity(getApplication(), 0, intent, 0));
+		Intent intent2 = new Intent(this, MenuActivity.class);
+		intent2.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+		liveCard.setAction(PendingIntent.getActivity(getApplication(), 0, intent2, 0));
 		liveCard.publish(LiveCard.PublishMode.REVEAL);
 	}
 
