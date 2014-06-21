@@ -107,6 +107,7 @@ public class BeaconService extends Service implements SensorEventListener{
 				});
 			}
 		});
+		showNotification("hi");
 		startScanning();
 	}
 
@@ -143,8 +144,6 @@ public class BeaconService extends Service implements SensorEventListener{
 		liveCard.setAction(PendingIntent.getActivity(getApplication(), 0, intent, 0));
 		liveCard.publish(LiveCard.PublishMode.REVEAL);
 	}
-
-
 
 	@Override
 	public void onDestroy() {
