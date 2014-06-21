@@ -30,28 +30,18 @@ public class BeaconService extends Service implements SensorEventListener{
 	private Sensor stepSensor;
 	private BeaconManager beaconManager;
 	private Region houseRegion;
-	private Beacon officeBeacon;
-	private Beacon kitchenBeacon;
-	private Beacon bedroomBeacon;
+	private Beacon specialBeacon;
 
 	private enum BeaconState {INSIDE, OUTSIDE};
 	private BeaconState officeState;
-	private BeaconState kitchenState;
-	private BeaconState bedroomState;
 	private LiveCard liveCard;
 	
 	private static final String TAG = "BeaconService";
 	
 	private static final String ESTIMOTE_PROXIMITY_UUID = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
 
-	private static final int officeMajor = 47233;
+	private static final int specialMajor = 47233;
 	private static final int officeMinor = 1;
-
-	private static final int kitchenMajor = 32789;
-	private static final int kitchenMinor = 44173;
-
-	private static final int bedroomMajor = 54060;
-	private static final int bedroomMinor = 38916;
 
 	private static final double enterThreshold = 1.5;
 	private static final double exitThreshold = 2.5;
@@ -81,8 +71,6 @@ public class BeaconService extends Service implements SensorEventListener{
 		sensorManager.registerListener(this, stepSensor,SensorManager.SENSOR_DELAY_NORMAL);
 
 		officeState = BeaconState.OUTSIDE;
-		kitchenState = BeaconState.OUTSIDE;
-		bedroomState = BeaconState.OUTSIDE;
 
 		houseRegion = new Region("regionId", ESTIMOTE_PROXIMITY_UUID, null, null);
 		beaconManager = new BeaconManager(getApplicationContext());
@@ -91,6 +79,7 @@ public class BeaconService extends Service implements SensorEventListener{
 		// In order for this demo to be more responsive and immediate we lower down those values.
 		//beaconManager.setBackgroundScanPeriod(TimeUnit.SECONDS.toMillis(5), TimeUnit.SECONDS.toMillis(25));
 		//beaconManager.setForegroundScanPeriod(TimeUnit.SECONDS.toMillis(5), TimeUnit.SECONDS.toMillis(10));
+		
 		beaconManager.setRangingListener(new BeaconManager.RangingListener() {
 			@Override
 			public void onBeaconsDiscovered(Region region, final List<Beacon> beacons) {
@@ -99,20 +88,12 @@ public class BeaconService extends Service implements SensorEventListener{
 					public void run() {
 						for (Beacon beacon : beacons) {
 							//Log.d(TAG, "MAC = " + beacon.getMacAddress() + ", RSSI = " + -beacon.getRssi());
-							if (beacon.getMajor() == officeMajor && beacon.getMinor() == officeMinor ){
-								officeBeacon = beacon;
-							}
-							if (beacon.getMajor() == kitchenMajor && beacon.getMinor() == kitchenMinor){
-								kitchenBeacon = beacon;
-							}
-							if (beacon.getMajor() == bedroomMajor && beacon.getMinor() == bedroomMinor){
-								bedroomBeacon = beacon;
+							if (beacon.getMajor() == specialMajor && beacon.getMinor() == officeMinor ){
+								specialBeacon = beacon;
 							}
 						}
-
-						
-						if (officeBeacon != null){
-							double officeDistance = Utils.computeAccuracy(officeBeacon);
+						if (specialBeacon != null){
+							double officeDistance = Utils.computeAccuracy(specialBeacon);
 							Log.d(TAG, "officeDistance: " + officeDistance);
 							if (officeDistance < enterThreshold && officeState == BeaconState.OUTSIDE){
 								officeState = BeaconState.INSIDE;
@@ -122,36 +103,11 @@ public class BeaconService extends Service implements SensorEventListener{
 								showNotification("You left AngelHacks");
 							}
 						}
-						
-						if (kitchenBeacon != null){
-							double kitchenDistance = Utils.computeAccuracy(kitchenBeacon);
-							Log.d(TAG, "kitchenDistance: " + kitchenDistance);
-							if (kitchenDistance < enterThreshold && kitchenState == BeaconState.OUTSIDE){
-								kitchenState = BeaconState.INSIDE;
-								showNotification("You are in the kitchen");
-							}else if (kitchenDistance > exitThreshold && kitchenState == BeaconState.INSIDE){
-								kitchenState = BeaconState.OUTSIDE;
-								showNotification("You left the kitchen");
-							}
-						}
-						
-						if (bedroomBeacon != null){
-							double bedroomDistance = Utils.computeAccuracy(bedroomBeacon);
-							Log.d(TAG, "bedroomDistance: " + bedroomDistance);
-							if (bedroomDistance < enterThreshold && bedroomState == BeaconState.OUTSIDE){
-								bedroomState = BeaconState.INSIDE;
-								showNotification("You are in the bedroom");
-							}else if (bedroomDistance > exitThreshold && bedroomState == BeaconState.INSIDE){
-								bedroomState = BeaconState.OUTSIDE;
-								showNotification("You left the bedroom");
-							}
-						}
-
-
 					}
 				});
 			}
 		});
+		startScanning();
 	}
 
 	private void startScanning(){
@@ -196,25 +152,6 @@ public class BeaconService extends Service implements SensorEventListener{
 		beaconManager.disconnect();
 	}
 	
-	
-
-	@Override
-	public int onStartCommand(Intent intent, int flags, int startId) {
-		ArrayList<String> voiceResults = intent.getExtras().getStringArrayList(RecognizerIntent.EXTRA_RESULTS);
-		for (String voice : voiceResults) {
-			Log.d(TAG,"voiceResults:voice = " + voice);
-			if (voice.contains("stop")){
-				Log.d(TAG,"stopScanning");
-				stopScanning();
-			}else if (voice.contains("start")){
-				Log.d(TAG,"startScanning");
-				startScanning();
-			}
-		}
-		
-		return super.onStartCommand(intent, flags, startId);
-	}
-
 	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
 		// TODO Auto-generated method stub
