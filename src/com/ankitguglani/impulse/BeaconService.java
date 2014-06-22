@@ -167,10 +167,11 @@ public class BeaconService extends Service implements SensorEventListener{
 		}
 	}
 
-	private void showNotification(String msg) {
-		Log.d(TAG, msg);
+	private void showNotification(String title, String subtitle) {
+		Log.d(TAG, title);
 		RemoteViews views = new RemoteViews(getPackageName(), R.layout.livecard_beacon);
-		views.setTextViewText(R.id.livecard_content,msg);
+		views.setTextViewText(R.id.livecard_title,title);
+		views.setTextViewText(R.id.livecard_sub_title, subtitle);
 		if(liveCard != null){
 			liveCard.unpublish();
 		}
@@ -243,7 +244,7 @@ public class BeaconService extends Service implements SensorEventListener{
 	        String mTitle = jObj.getString("title");
 	        String mSubTitle = jObj.getString("subtitle");
 	        
-	        showNotification(mTitle);
+	        showNotification(mTitle, mSubTitle);
 	        Log.d(TAG, "showNotification");
 
 	      } catch (JSONException e) {
