@@ -3,11 +3,11 @@
     <item 
         android:id = "@+id/dismiss"
         android:title="@string/dismiss"
-        android:icon = "@drawable/ic_no_50"/>
+        android:icon = "@drawable/dismiss_icon_360"/>
     <item 
         android:id = "@+id/dismiss_cat"
         android:title="@string/dismiss_cat"
-        android:icon = "@drawable/ic_no_50"/>
+        android:icon = "@drawable/temp_icon_360"/>
     <item 
         android:id = "@+id/stop"
         android:title="@string/stop"
