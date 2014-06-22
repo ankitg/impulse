@@ -1,5 +1,6 @@
 package com.ankitguglani.impulse;
 
+import java.util.ArrayList;
 import java.util.List;
 import com.estimote.sdk.Beacon;
 import com.estimote.sdk.BeaconManager;
@@ -42,7 +43,8 @@ public class BeaconService extends Service implements SensorEventListener{
 
 	private static final double enterThreshold = 1.5;
 	private static final double exitThreshold = 2.5;
-
+	private List<Integer> dismissIDs = new ArrayList<Integer>();
+	private	int   currentID	= 1;
 
 
 	@Override
@@ -94,7 +96,10 @@ public class BeaconService extends Service implements SensorEventListener{
 							Log.d(TAG, "officeDistance: " + officeDistance);
 							if (officeDistance < enterThreshold && officeState == BeaconState.OUTSIDE){
 								officeState = BeaconState.INSIDE;
+								if(dismissIDs.indexOf(currentID) == -1){
 								showNotification("You are at AngelHack");
+								dismissIDs.add(currentID);
+								}
 							}else if (officeDistance > exitThreshold && officeState == BeaconState.INSIDE){
 								officeState = BeaconState.OUTSIDE;
 								MainActivity.unPublish();
