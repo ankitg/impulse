@@ -169,6 +169,7 @@ public class BeaconService extends Service implements SensorEventListener{
 
 	private void showNotification(String title, String subtitle) {
 		Log.d(TAG, title);
+		MainActivity.unPublish();
 		RemoteViews views = new RemoteViews(getPackageName(), R.layout.livecard_beacon);
 		views.setTextViewText(R.id.livecard_title,title);
 		views.setTextViewText(R.id.livecard_sub_title, subtitle);
