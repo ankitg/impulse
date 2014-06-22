@@ -38,13 +38,13 @@ public class BeaconService extends Service implements SensorEventListener{
 	
 	private static final String ESTIMOTE_PROXIMITY_UUID = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
 
-	private static final int specialMajor = 47233;
-	private static final int specialMinor = 1;
+//	private static final int specialMajor = 47233;
+//	private static final int specialMinor = 1;
 
 	private static final double enterThreshold = 1.5;
 	private static final double exitThreshold = 2.5;
 	private List<Integer> dismissIDs = new ArrayList<Integer>();
-	private	int   currentID	= 1;
+	//private	int   currentID	= 1;
 
 
 	@Override
@@ -87,18 +87,26 @@ public class BeaconService extends Service implements SensorEventListener{
 					public void run() {
 						for (Beacon beacon : beacons) {
 							//Log.d(TAG, "MAC = " + beacon.getMacAddress() + ", RSSI = " + -beacon.getRssi());
-							if (beacon.getMajor() == specialMajor && beacon.getMinor() == specialMinor ){
+//							if (beacon.getMajor() == specialMajor && beacon.getMinor() == specialMinor ){
+//								specialBeacon = beacon;
+//							}
+							
+							if(dismissIDs.indexOf(beacon.getMinor()) == -1 )
+							{
 								specialBeacon = beacon;
+//								dismissIDs.add(specialBeacon.getMinor());
 							}
 						}
+						
 						if (specialBeacon != null){
 							double officeDistance = Utils.computeAccuracy(specialBeacon);
 							Log.d(TAG, "officeDistance: " + officeDistance);
 							if (officeDistance < enterThreshold && officeState == BeaconState.OUTSIDE){
 								officeState = BeaconState.INSIDE;
-								if(dismissIDs.indexOf(currentID) == -1){
-								showNotification("You are at AngelHack");
-								dismissIDs.add(currentID);
+								if(dismissIDs.indexOf(specialBeacon.getMinor()) == -1)
+								{
+									showNotification("You are at AngelHack");
+									dismissIDs.add(specialBeacon.getMinor());
 								}
 							}else if (officeDistance > exitThreshold && officeState == BeaconState.INSIDE){
 								officeState = BeaconState.OUTSIDE;
