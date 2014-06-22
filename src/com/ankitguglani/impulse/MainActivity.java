@@ -21,7 +21,7 @@ public class MainActivity extends Activity{
 	
 	private void showNotification(String msg) {
 		Log.d(TAG, msg);
-		RemoteViews views = new RemoteViews(getPackageName(), R.layout.livecard_beacon);
+		RemoteViews views = new RemoteViews(getPackageName(), R.layout.activity_glass);
 		views.setTextViewText(R.id.livecard_content,msg);
 		if(liveCard != null){
 			liveCard.unpublish();
