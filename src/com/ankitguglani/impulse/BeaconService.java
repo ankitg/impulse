@@ -38,7 +38,7 @@ public class BeaconService extends Service implements SensorEventListener{
 	private static final String ESTIMOTE_PROXIMITY_UUID = "B9407F30-F5F8-466E-AFF9-25556B57FE6D";
 
 	private static final int specialMajor = 47233;
-	private static final int officeMinor = 1;
+	private static final int specialMinor = 1;
 
 	private static final double enterThreshold = 1.5;
 	private static final double exitThreshold = 2.5;
@@ -85,7 +85,7 @@ public class BeaconService extends Service implements SensorEventListener{
 					public void run() {
 						for (Beacon beacon : beacons) {
 							//Log.d(TAG, "MAC = " + beacon.getMacAddress() + ", RSSI = " + -beacon.getRssi());
-							if (beacon.getMajor() == specialMajor && beacon.getMinor() == officeMinor ){
+							if (beacon.getMajor() == specialMajor && beacon.getMinor() == specialMinor ){
 								specialBeacon = beacon;
 							}
 						}

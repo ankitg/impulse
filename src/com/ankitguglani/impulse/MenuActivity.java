@@ -41,7 +41,7 @@ public class MenuActivity extends Activity {
 		Log.d(TAG, "onOptionsItemSelected");
 		switch (item.getItemId()) {
 		case R.id.stop:
-			stopService(new Intent(this, BeaconService.class));
+			stopService(new Intent(MenuActivity.this, BeaconService.class));
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
