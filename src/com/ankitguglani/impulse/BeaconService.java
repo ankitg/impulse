@@ -100,12 +100,17 @@ public class BeaconService extends Service implements SensorEventListener{
 								showNotification("You left AngelHacks");
 							}
 						}
+						else
+						{
+							Log.d(TAG,"no beacon");
+						}
 					}
 				});
 			}
 		});
 		showNotification("hi");
 		//stopScanning();
+		startScanning();
 	}
 
 	private void startScanning(){

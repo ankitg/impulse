@@ -17,6 +17,10 @@ public class MainActivity extends Activity{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		showNotification("hello");
+		
+		Intent serviceIntent = new Intent(MainActivity.this, BeaconService.class);
+		serviceIntent.setAction("com.ankitguglani.impulse.SCAN");
+		startService(serviceIntent);
 	}
 	
 	private void showNotification(String msg) {
@@ -33,4 +37,13 @@ public class MainActivity extends Activity{
 		liveCard.setAction(PendingIntent.getActivity(getApplicationContext(), 0, menuIntent, 0));
 		liveCard.publish(LiveCard.PublishMode.REVEAL);
 	}
+
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+//		stopService(new Intent(MainActivity.this, BeaconService.class));
+	}
+	
+	
 }
