@@ -139,7 +139,7 @@ public class BeaconService extends Service implements SensorEventListener{
 				});
 			}
 		});
-		showNotification("hi");
+		//showNotification("hi");
 		//stopScanning();
 		startScanning();
 	}
@@ -236,8 +236,14 @@ public class BeaconService extends Service implements SensorEventListener{
 	      Log.d(TAG, "loaded");
 
 	      try {
-	        JSONArray jsonObj = new JSONArray(result);
-	        showNotification("You are at");
+	        JSONArray jsonArray = new JSONArray(result);
+	        JSONObject jObj = (JSONObject) jsonArray.get(0);
+	        
+	        jObj.getString("imageurl");
+	        String mTitle = jObj.getString("title");
+	        String mSubTitle = jObj.getString("subtitle");
+	        
+	        showNotification(mTitle);
 	        Log.d(TAG, "showNotification");
 
 	      } catch (JSONException e) {
