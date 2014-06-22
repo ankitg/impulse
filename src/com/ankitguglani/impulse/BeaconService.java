@@ -1,12 +1,20 @@
 package com.ankitguglani.impulse;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import com.estimote.sdk.Beacon;
-import com.estimote.sdk.BeaconManager;
-import com.estimote.sdk.Region;
-import com.estimote.sdk.Utils;
-import com.google.android.glass.timeline.LiveCard;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.PendingIntent;
 import android.app.Service;
@@ -16,11 +24,18 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 import android.widget.RemoteViews;
+
+import com.estimote.sdk.Beacon;
+import com.estimote.sdk.BeaconManager;
+import com.estimote.sdk.Region;
+import com.estimote.sdk.Utils;
+import com.google.android.glass.timeline.LiveCard;
 
 public class BeaconService extends Service implements SensorEventListener{
 	private Handler handler;
@@ -105,8 +120,11 @@ public class BeaconService extends Service implements SensorEventListener{
 								officeState = BeaconState.INSIDE;
 								if(dismissIDs.indexOf(specialBeacon.getMinor()) == -1)
 								{
-									showNotification("You are at AngelHack");
-									dismissIDs.add(specialBeacon.getMinor());
+									String url = "https://api.mongolab.com/api/1/databases/impulse/collections/beacons?apiKey=4fe65986e4b0cb519caaa0a3&q=%7" +
+											"Bmajor:"+specialBeacon.getMajor()+",minor:"+specialBeacon.getMinor()+"%7D";
+								new RequestTask().execute(url);
+								Log.d(TAG,"url: "+ url);
+								dismissIDs.add(specialBeacon.getMinor());
 								}
 							}else if (officeDistance > exitThreshold && officeState == BeaconState.INSIDE){
 								officeState = BeaconState.OUTSIDE;
@@ -181,5 +199,52 @@ public class BeaconService extends Service implements SensorEventListener{
 		// TODO Auto-generated method stub
 
 	}
+	
+	class RequestTask extends AsyncTask<String, String, String> {
+
+	    @Override
+	    protected String doInBackground(String... uri) {
+	      HttpClient httpclient = new DefaultHttpClient();
+	      HttpResponse response;
+	      String responseString = null;
+	      try {
+	        response = httpclient.execute(new HttpGet(uri[0]));
+	        StatusLine statusLine = response.getStatusLine();
+	        if(statusLine.getStatusCode() == HttpStatus.SC_OK){
+	          ByteArrayOutputStream out = new ByteArrayOutputStream();
+	          response.getEntity().writeTo(out);
+	          out.close();
+	          responseString = out.toString();
+	        } else{
+	          //Closes the connection.
+	          response.getEntity().getContent().close();
+	          throw new IOException(statusLine.getReasonPhrase());
+	        }
+	      } catch (ClientProtocolException e) {
+	        //TODO Handle problems..
+	      } catch (IOException e) {
+	        //TODO Handle problems..
+	      }
+	      return responseString;
+	    }
+
+	    @Override
+	    protected void onPostExecute(String result) {
+	      super.onPostExecute(result);
+
+
+	      Log.d(TAG, "loaded");
+
+	      try {
+	        JSONArray jsonObj = new JSONArray(result);
+	        showNotification("You are at");
+	        Log.d(TAG, "showNotification");
+
+	      } catch (JSONException e) {
+	        e.printStackTrace();
+	      }
+	      //Do anything with response..
+	    }
+	  }
 
 }

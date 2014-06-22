@@ -43,8 +43,12 @@ public class MenuActivity extends Activity {
 		case R.id.dismiss:
 			MainActivity.unPublish();
 			return true;
+		case R.id.dismiss_cat:
+			MainActivity.unPublish();
+			return true;
 		case R.id.stop:
 			stopService(new Intent(MenuActivity.this, BeaconService.class));
+			MainActivity.unPublish();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
