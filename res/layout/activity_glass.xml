@@ -10,7 +10,7 @@
         android:id="@+id/activity_glass_progress_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/main_bg" >
+        android:background="@drawable/impulse_logo_360" >
     </FrameLayout>
 
 </FrameLayout>
