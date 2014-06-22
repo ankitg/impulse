@@ -40,6 +40,9 @@ public class MenuActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Log.d(TAG, "onOptionsItemSelected");
 		switch (item.getItemId()) {
+		case R.id.dismiss:
+			MainActivity.unPublish();
+			return true;
 		case R.id.stop:
 			stopService(new Intent(MenuActivity.this, BeaconService.class));
 			return true;

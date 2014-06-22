@@ -11,22 +11,20 @@ import android.widget.RemoteViews;
 
 public class MainActivity extends Activity{
 	private static final String TAG = "BeaconService";
-	private LiveCard liveCard;
+	private static LiveCard liveCard;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		showNotification("hello");
+		showNotification();
 		
 		Intent serviceIntent = new Intent(MainActivity.this, BeaconService.class);
 		serviceIntent.setAction("com.ankitguglani.impulse.SCAN");
 		startService(serviceIntent);
 	}
 	
-	private void showNotification(String msg) {
-		Log.d(TAG, msg);
+	private void showNotification() {
 		RemoteViews views = new RemoteViews(getPackageName(), R.layout.activity_glass);
-		views.setTextViewText(R.id.livecard_content,msg);
 		if(liveCard != null){
 			liveCard.unpublish();
 		}
@@ -44,5 +42,10 @@ public class MainActivity extends Activity{
 		super.onDestroy();
 	}
 	
+	public  static void  unPublish(){
+		if(liveCard != null){
+			liveCard.unpublish();
+		}
+	}
 	
 }

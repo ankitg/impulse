@@ -97,7 +97,7 @@ public class BeaconService extends Service implements SensorEventListener{
 								showNotification("You are at AngelHack");
 							}else if (officeDistance > exitThreshold && officeState == BeaconState.INSIDE){
 								officeState = BeaconState.OUTSIDE;
-								showNotification("You left AngelHacks");
+								MainActivity.unPublish();
 							}
 						}
 						else
