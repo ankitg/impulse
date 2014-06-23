@@ -122,9 +122,9 @@ public class BeaconService extends Service implements SensorEventListener{
 								{
 									String url = "https://api.mongolab.com/api/1/databases/impulse/collections/beacons?apiKey=4fe65986e4b0cb519caaa0a3&q=%7" +
 											"Bmajor:"+specialBeacon.getMajor()+",minor:"+specialBeacon.getMinor()+"%7D";
-								new RequestTask().execute(url);
-								Log.d(TAG,"url: "+ url);
-								dismissIDs.add(specialBeacon.getMinor());
+									new RequestTask().execute(url);
+									Log.d(TAG,"url: "+ url);
+									dismissIDs.add(specialBeacon.getMinor());
 								}
 							}else if (officeDistance > exitThreshold && officeState == BeaconState.INSIDE){
 								officeState = BeaconState.OUTSIDE;
@@ -167,10 +167,16 @@ public class BeaconService extends Service implements SensorEventListener{
 		}
 	}
 
-	private void showNotification(String title, String subtitle) {
+	private void showNotification(String title, String subtitle, int id) {
 		Log.d(TAG, title);
 		MainActivity.unPublish();
-		RemoteViews views = new RemoteViews(getPackageName(), R.layout.livecard_beacon);
+		RemoteViews views = null;
+		
+		if(id == 1)
+			views = new RemoteViews(getPackageName(), R.layout.livecard_beacon);
+		else
+			views = new RemoteViews(getPackageName(), R.layout.livecard_beacon_movie);
+		
 		views.setTextViewText(R.id.livecard_title,title);
 		views.setTextViewText(R.id.livecard_sub_title, subtitle);
 		if(liveCard != null){
@@ -244,8 +250,9 @@ public class BeaconService extends Service implements SensorEventListener{
 	        jObj.getString("imageurl");
 	        String mTitle = jObj.getString("title");
 	        String mSubTitle = jObj.getString("subtitle");
+	        Integer mID = jObj.getInt("minor");
 	        
-	        showNotification(mTitle, mSubTitle);
+	        showNotification(mTitle, mSubTitle,mID);
 	        Log.d(TAG, "showNotification");
 
 	      } catch (JSONException e) {

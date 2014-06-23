@@ -4,17 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/black">
+    android:background="@drawable/background_urbanof">
 
-    <TextView android:id="@+id/livecard_title"
+    <TextView
+        android:id="@+id/livecard_title"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="top"
         android:keepScreenOn="true"
+        android:textAlignment="center"
         android:textColor="@android:color/white"
+        android:textSize="40sp"
         android:textStyle="bold"
-        android:textSize="30sp"
-        android:gravity="center"
-		 />
+        android:paddingLeft="150dp" />
 
     <TextView
         android:id="@+id/livecard_sub_title"
@@ -22,9 +24,11 @@
         android:layout_height="match_parent"
         android:gravity="bottom"
         android:keepScreenOn="true"
-        android:paddingLeft="5dp"
+        android:paddingLeft="10dp"
+        android:textAlignment="center"
         android:textColor="@android:color/white"
-        android:textSize="30sp"
-        android:textStyle="bold" />
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:width="100dp" />
 
 </FrameLayout>
