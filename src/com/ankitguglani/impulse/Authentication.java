@@ -35,6 +35,7 @@ public class Authentication extends Activity {
 	public 	static 	int nymiHandle = 0;
 	final String path = Environment.getExternalStorageDirectory() + "";
 	public static ArrayList<NclProvision> provisions = new ArrayList<NclProvision>();
+	String PREFS_NAME = "provision";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +82,7 @@ public class Authentication extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 	
-	public static void HandleCallBack(NclEvent event, Object userData) {
+	public void HandleCallBack(NclEvent event, Object userData) {
 
 		Log.d("HandleCallBack", "NclEvent: "
 				+ NclEventType.values()[event.type]);
@@ -121,8 +122,10 @@ public class Authentication extends Activity {
 
 		case NCL_EVENT_PROVISION: {
 			Authentication.provisions.add(event.provision.provision);
-			writeToAppLog("NCL_EVENT_PROVISION key: " + SomeWhatReadable(event.provision.provision.key));
-			writeToAppLog("NCL_EVENT_PROVISION id: " + SomeWhatReadable(event.provision.provision.id));
+			SharedPreferences id = getSharedPreferences(PREFS_NAME, 0);
+			SharedPreferences.Editor editor = id.edit();
+			editor.putString("ID", SomeWhatReadable(event.provision.provision.id));
+			editor.commit();
 			break;
 		}
 
@@ -205,49 +208,4 @@ public class Authentication extends Activity {
 	{
 		Ncl.validate(nymiHandle);
 	}
-	
-	public void Save() {
-		SharedPreferences prefs = this.getSharedPreferences("SK2", Context.MODE_PRIVATE);
-		// writeToOnAppLog("Save Clicked\n", 1);
-		JSONObject jObj = new JSONObject();
-		JSONArray jArray = new JSONArray();
-
-		JSONObject jPro = null;
-		JSONArray jKey = null;
-		JSONArray jId = null;
-
-		for (NclProvision p : provisions) {
-			// nclCalls.nclFind(p.key, p.id);
-
-			jPro = new JSONObject();
-			jKey = new JSONArray();
-			jId = new JSONArray();
-
-			for (int a = 0; a < NclProvision.NCL_PROVISION_KEY_SIZE; a++) {
-				jKey.put(p.key[a]);
-				jId.put(p.id[a]);
-			}
-			try {
-				jPro.putOpt("key", jKey);
-				jPro.putOpt("id", jId);
-				jArray.put(jPro);
-			}
-			catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		try {
-			jObj.put("provisions", jArray);
-			Log.d("Java Code", jObj.toString());
-		}
-		catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		SharedPreferences.Editor editor = prefs.edit();
-		editor.putString("provisions", jObj.toString());
-		editor.commit();
-	}
-
 }
