@@ -5,4 +5,10 @@
     <string name="stop">Stop</string>
     <string name="dismiss">Dismiss</string>
     <string name="dismiss_cat">Dismiss Similar</string>
+    <string name="glass_voice_trigger_nymi">Setup Nymi</string>
+	<string name="discover">Discover</string>
+	<string name="agree">Agree</string>
+	<string name="provision">Provision</string>
+	<string name="find">Find</string>
+	<string name="validate">Validate</string>
 </resources>

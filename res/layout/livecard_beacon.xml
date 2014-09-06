@@ -15,8 +15,7 @@
         android:textAlignment="center"
         android:textColor="@android:color/white"
         android:textSize="40sp"
-        android:textStyle="bold"
-        android:paddingLeft="150dp" />
+        android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/livecard_sub_title"
@@ -24,7 +23,6 @@
         android:layout_height="match_parent"
         android:gravity="bottom"
         android:keepScreenOn="true"
-        android:paddingLeft="10dp"
         android:textAlignment="center"
         android:textColor="@android:color/white"
         android:textSize="20sp"
