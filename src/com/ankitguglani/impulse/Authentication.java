@@ -2,10 +2,6 @@ package com.ankitguglani.impulse;
 
 import java.util.ArrayList;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import nclSDK.Ncl;
 import nclSDK.NclBool;
 import nclSDK.NclCallback;
@@ -13,21 +9,22 @@ import nclSDK.NclEvent;
 import nclSDK.NclEventType;
 import nclSDK.NclMode;
 import nclSDK.NclProvision;
-
-import com.google.android.glass.timeline.LiveCard;
-
 import android.app.Activity;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.RemoteViews;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+
+import com.google.android.glass.app.Card;
+import com.google.android.glass.timeline.LiveCard;
+import com.google.android.glass.widget.CardScrollAdapter;
+import com.google.android.glass.widget.CardScrollView;
 
 public class Authentication extends Activity {
 	private static 	LiveCard liveCard;
@@ -36,6 +33,8 @@ public class Authentication extends Activity {
 	final String path = Environment.getExternalStorageDirectory() + "";
 	public static ArrayList<NclProvision> provisions = new ArrayList<NclProvision>();
 	String PREFS_NAME = "provision";
+	
+	private ArrayList<Card> mCards = new ArrayList<Card>();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -56,16 +55,91 @@ public class Authentication extends Activity {
 	}
 	
 	private void showNotification() {
-		RemoteViews views = new RemoteViews(getPackageName(), R.layout.activity_authentication);
-		if(liveCard != null){
-			liveCard.unpublish();
-		}
-		liveCard = new LiveCard(getApplication(),"beacon");
-		liveCard.setViews(views);
-		Intent menuIntent = new Intent(this, MenuActivity.class);
-		menuIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-		liveCard.setAction(PendingIntent.getActivity(getApplicationContext(), 0, menuIntent, 0));
-		liveCard.publish(LiveCard.PublishMode.REVEAL);
+//		RemoteViews views = new RemoteViews(getPackageName(), R.layout.activity_authentication);
+//		if(liveCard != null){
+//			liveCard.unpublish();
+//		}
+//		liveCard = new LiveCard(getApplication(),"beacon");
+//		liveCard.setViews(views);
+//		Intent menuIntent = new Intent(this, MenuActivity.class);
+//		menuIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//		liveCard.setAction(PendingIntent.getActivity(getApplicationContext(), 0, menuIntent, 0));
+//		liveCard.publish(LiveCard.PublishMode.REVEAL);
+		
+		Card opt1 = new Card(this);
+		opt1.setText(R.string.discover);
+		mCards.add(opt1);
+		
+		Card opt2 = new Card(this);
+		opt2.setText(R.string.agree);
+		mCards.add(opt2);
+		
+		Card opt3 = new Card(this);
+		opt3.setText(R.string.provision);
+		mCards.add(opt3);
+		
+		Card opt4 = new Card(this);
+		opt4.setText(R.string.find);
+		mCards.add(opt4);
+
+		Card opt5 = new Card(this);
+		opt5.setText(R.string.validate);
+		mCards.add(opt5);
+		
+		CardScrollView cardScrollView = new CardScrollView(this);
+		CardScrollAdapter cardScrollAdapter = new CardScrollAdapter() {
+			
+			@Override
+			public View getView(int arg0, View arg1, ViewGroup arg2) {
+				return mCards.get(arg0).getView();
+			}
+			
+			@Override
+			public int getPosition(Object arg0) {
+				return mCards.indexOf(arg0);
+			}
+			
+			@Override
+			public Object getItem(int arg0) {
+				return mCards.get(arg0);
+			}
+			
+			@Override
+			public int getCount() {
+				return mCards.size();
+			}
+		};
+		cardScrollView.setAdapter(cardScrollAdapter);
+		
+		cardScrollView.setOnItemClickListener(new OnItemClickListener() 
+		{
+		      @Override
+		      public void onItemClick(AdapterView<?> parent, View view, int position, long id) 
+		      {
+	              switch (position){
+	              	case 0:
+	              		Authentication.onDiscover();
+	              		break;
+	              	case 1:
+	              		Authentication.onAgree();
+	              		break;
+	              	case 2:
+	              		Authentication.onProvision();
+	              		break;
+	              	case 3:
+	              		Authentication.onFind();
+	              		break;
+	              	case 4:
+	              		Authentication.onValidate();
+	              		break;
+	              	default: break;
+	              }
+		      }
+		 });
+		
+		cardScrollView.activate();
+		setContentView(cardScrollView);
+		
 	}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
